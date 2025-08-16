@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Shop App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background-color: #FF0000;
+            padding: 16px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .container {
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .category-card {
+            background-color: #1a1a1a;
+            border: 2px solid #FF0000;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(255, 0, 0, 0.3);
+        }
+        
+        .category-image {
+            width: 100%;
+            height: 120px;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FF0000;
+            font-size: 24px;
+        }
+        
+        .category-name {
+            padding: 16px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .admin-panel {
+            background-color: #8B0000;
+            border: 2px solid #FF0000;
+            border-radius: 16px;
+            margin: 16px 0;
+            padding: 16px;
+        }
+        
+        .admin-title {
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .admin-button {
+            background-color: #ffffff;
+            color: #FF0000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .cart-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #FF0000;
+            color: #ffffff;
+            border: none;
+            padding: 16px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.4);
+        }
+        
+        .user-info {
+            background-color: #1a1a1a;
+            border: 1px solid #FF0000;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .status {
+            background-color: #1a1a1a;
+            border: 1px solid #FF0000;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .status-label {
+            color: #ffffff;
+        }
+        
+        .status-value {
+            color: #FF0000;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        🛍️ Магазин Одежды
+    </div>
+    
+    <div class="container">
+        <!-- Информация о пользователе -->
+        <div class="user-info">
+            <h3>👤 Информация о пользователе</h3>
+            <div id="userInfo">Загрузка...</div>
+        </div>
+        
+        <!-- Статус Telegram WebApp -->
+        <div class="status">
+            <h3>📱 Статус Telegram WebApp</h3>
+            <div class="status-item">
+                <span class="status-label">Доступен:</span>
+                <span class="status-value" id="telegramAvailable">Проверка...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Тема:</span>
+                <span class="status-value" id="telegramTheme">Проверка...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Админ:</span>
+                <span class="status-value" id="isAdmin">Проверка...</span>
+            </div>
+        </div>
+        
+        <!-- Админ-панель (видна только админу) -->
+        <div class="admin-panel" id="adminPanel" style="display: none;">
+            <div class="admin-title">
+                ⚙️ Админ-панель
+            </div>
+            <button class="admin-button" onclick="addProduct()">
+                ➕ Добавить товар
+            </button>
+        </div>
+        
+        <!-- Категории товаров -->
+        <div class="category-grid">
+            <div class="category-card" onclick="openCategory('Обувь')">
+                <div class="category-image">👟</div>
+                <div class="category-name">Обувь</div>
+            </div>
+            <div class="category-card" onclick="openCategory('Верх')">
+                <div class="category-image">👕</div>
+                <div class="category-name">Верх</div>
+            </div>
+            <div class="category-card" onclick="openCategory('Низ')">
+                <div class="category-image">👖</div>
+                <div class="category-name">Низ</div>
+            </div>
+            <div class="category-card" onclick="openCategory('Сумки')">
+                <div class="category-image">👜</div>
+                <div class="category-name">Сумки</div>
+            </div>
+            <div class="category-card" onclick="openCategory('Аксессуары')">
+                <div class="category-image">⌚</div>
+                <div class="category-name">Аксессуары</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Кнопка корзины -->
+    <button class="cart-button" onclick="openCart()">
+        🛒
+    </button>
+    
+    <script>
+        // Инициализация Telegram WebApp
+        let tg = window.Telegram.WebApp;
+        
+        // Функция для проверки доступности Telegram WebApp
+        function checkTelegramWebApp() {
+            const telegramAvailable = document.getElementById('telegramAvailable');
+            const telegramTheme = document.getElementById('telegramTheme');
+            const isAdmin = document.getElementById('isAdmin');
+            const adminPanel = document.getElementById('adminPanel');
+            
+            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                telegramAvailable.textContent = '✅ Да';
+                telegramTheme.textContent = tg.colorScheme || 'Светлая';
+                
+                // Проверка на админа
+                const username = tg.initDataUnsafe.user.username;
+                const isAdminUser = username === 'ramil_slonikov';
+                isAdmin.textContent = isAdminUser ? '✅ Да' : '❌ Нет';
+                
+                if (isAdminUser) {
+                    adminPanel.style.display = 'block';
+                }
+                
+                // Отображение информации о пользователе
+                const userInfo = document.getElementById('userInfo');
+                userInfo.innerHTML = `
+                    <p><strong>ID:</strong> ${tg.initDataUnsafe.user.id}</p>
+                    <p><strong>Имя:</strong> ${tg.initDataUnsafe.user.first_name || 'Не указано'}</p>
+                    <p><strong>Фамилия:</strong> ${tg.initDataUnsafe.user.last_name || 'Не указана'}</p>
+                    <p><strong>Username:</strong> @${username || 'Не указан'}</p>
+                    <p><strong>Язык:</strong> ${tg.initDataUnsafe.user.language_code || 'Не указан'}</p>
+                `;
+                
+                // Настройка цветов Telegram
+                tg.setHeaderColor('#FF0000');
+                tg.setBackgroundColor('#000000');
+                tg.expand();
+                tg.ready();
+                
+            } else {
+                telegramAvailable.textContent = '❌ Нет';
+                telegramTheme.textContent = 'Недоступно';
+                isAdmin.textContent = 'Недоступно';
+                
+                document.getElementById('userInfo').innerHTML = `
+                    <p>Telegram WebApp API недоступен</p>
+                    <p>Это приложение должно быть запущено в Telegram</p>
+                `;
+            }
+        }
+        
+        // Функции для взаимодействия
+        function openCategory(categoryName) {
+            if (tg && tg.showAlert) {
+                tg.showAlert(`Открыта категория: ${categoryName}`);
+            } else {
+                alert(`Открыта категория: ${categoryName}`);
+            }
+        }
+        
+        function openCart() {
+            if (tg && tg.showAlert) {
+                tg.showAlert('Открыта корзина');
+            } else {
+                alert('Открыта корзина');
+            }
+        }
+        
+        function addProduct() {
+            if (tg && tg.showAlert) {
+                tg.showAlert('Функция добавления товара');
+            } else {
+                alert('Функция добавления товара');
+            }
+        }
+        
+        // Запуск проверки при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            checkTelegramWebApp();
+            
+            // Дополнительная проверка через небольшую задержку
+            setTimeout(checkTelegramWebApp, 1000);
+        });
+        
+        // Обработка изменений в Telegram WebApp
+        if (tg) {
+            tg.onEvent('themeChanged', function() {
+                checkTelegramWebApp();
+            });
+        }
+    </script>
+</body>
+</html>
