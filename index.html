@@ -1,64 +1,334 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <base href="/">
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="Telegram Mini App для магазина одежды">
-
-  <!-- iOS meta tags & icons -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Telegram Shop">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
-
-  <title>Telegram Shop</title>
-  <link rel="manifest" href="manifest.json">
-
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = "1751991602";
-  </script>
-  <!-- This script adds the flutter initialization JS code -->
-  <script src="flutter.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Shop App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background-color: #FF0000;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .status {
+            background-color: #1a1a1a;
+            border: 2px solid #FF0000;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .status-label {
+            color: #ffffff;
+            font-weight: bold;
+        }
+        
+        .status-value {
+            color: #FF0000;
+            font-weight: bold;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .category-card {
+            background-color: #1a1a1a;
+            border: 2px solid #FF0000;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(255, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .category-image {
+            width: 100%;
+            height: 150px;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FF0000;
+            font-size: 48px;
+        }
+        
+        .category-name {
+            padding: 20px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .admin-panel {
+            background-color: #8B0000;
+            border: 2px solid #FF0000;
+            border-radius: 16px;
+            margin: 20px 0;
+            padding: 20px;
+        }
+        
+        .admin-title {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .admin-button {
+            background-color: #ffffff;
+            color: #FF0000;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-button:hover {
+            background-color: #FF0000;
+            color: #ffffff;
+        }
+        
+        .cart-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #FF0000;
+            color: #ffffff;
+            border: none;
+            padding: 20px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(255, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .cart-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(255, 0, 0, 0.6);
+        }
+        
+        .flutter-info {
+            background-color: #1a1a1a;
+            border: 2px solid #FF0000;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .flutter-info h3 {
+            color: #FF0000;
+            margin-bottom: 16px;
+        }
+        
+        .flutter-info p {
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+        
+        .flutter-link {
+            color: #FF0000;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .flutter-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-  <script>
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine().then(function(appRunner) {
-            appRunner.runApp();
-          });
+    <div class="header">
+        🛍️ Магазин Одежды
+    </div>
+    
+    <div class="container">
+        <!-- Информация о Telegram WebApp -->
+        <div class="status">
+            <h3>📱 Статус Telegram WebApp</h3>
+            <div class="status-item">
+                <span class="status-label">Доступен:</span>
+                <span class="status-value" id="telegramAvailable">Проверка...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Тема:</span>
+                <span class="status-value" id="telegramTheme">Проверка...</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Админ:</span>
+                <span class="status-value" id="isAdmin">Проверка...</span>
+            </div>
+        </div>
+        
+        <!-- Информация о Flutter приложении -->
+        <div class="flutter-info">
+            <h3>🚀 Flutter Web App</h3>
+            <p>Это демо-версия Telegram Mini App. Полная версия с Flutter доступна по ссылке:</p>
+            <p><a href="telegram_test.html" class="flutter-link">📱 Открыть полную версию</a></p>
+            <p>Для тестирования в Telegram используйте этот URL в @BotFather</p>
+        </div>
+        
+        <!-- Админ-панель (видна только админу) -->
+        <div class="admin-panel" id="adminPanel" style="display: none;">
+            <div class="admin-title">
+                ⚙️ Админ-панель
+            </div>
+            <button class="admin-button" onclick="addProduct()">
+                ➕ Добавить товар
+            </button>
+        </div>
+        
+        <!-- Категории товаров -->
+        <div class="category-grid">
+            <div class="category-card" onclick="openCategory('Обувь')">
+                <div class="category-image">👟</div>
+                <div class="category-name">Обувь</div>
+            </div>
+            <div class="category-card" onclick="openCategory('Верх')">
+                <div class="category-image">👕</div>
+                <div class="category-name">Верх</div>
+            </div>
+            <div class="category-card" onclick="openCategory('Низ')">
+                <div class="category-image">👖</div>
+                <div class="category-name">Низ</div>
+            </div>
+            <div class="category-card" onclick="openCategory('Сумки')">
+                <div class="category-image">👜</div>
+                <div class="category-name">Сумки</div>
+            </div>
+            <div class="category-card" onclick="openCategory('Аксессуары')">
+                <div class="category-image">⌚</div>
+                <div class="category-name">Аксессуары</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Кнопка корзины -->
+    <button class="cart-button" onclick="openCart()">
+        🛒
+    </button>
+    
+    <script>
+        // Инициализация Telegram WebApp
+        let tg = window.Telegram && window.Telegram.WebApp;
+        
+        // Функция для проверки доступности Telegram WebApp
+        function checkTelegramWebApp() {
+            const telegramAvailable = document.getElementById('telegramAvailable');
+            const telegramTheme = document.getElementById('telegramTheme');
+            const isAdmin = document.getElementById('isAdmin');
+            const adminPanel = document.getElementById('adminPanel');
+            
+            if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                telegramAvailable.textContent = '✅ Да';
+                telegramTheme.textContent = tg.colorScheme || 'Светлая';
+                
+                // Проверка на админа
+                const username = tg.initDataUnsafe.user.username;
+                const isAdminUser = username === 'ramil_slonikov';
+                isAdmin.textContent = isAdminUser ? '✅ Да' : '❌ Нет';
+                
+                if (isAdminUser) {
+                    adminPanel.style.display = 'block';
+                }
+                
+                // Настройка цветов Telegram
+                tg.setHeaderColor('#FF0000');
+                tg.setBackgroundColor('#000000');
+                tg.expand();
+                tg.ready();
+                
+            } else {
+                telegramAvailable.textContent = '❌ Нет';
+                telegramTheme.textContent = 'Недоступно';
+                isAdmin.textContent = 'Недоступно';
+            }
         }
-      });
-    });
-  </script>
-  
-  <!-- Telegram WebApp API -->
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  
-  <script>
-    // Инициализация Telegram WebApp
-    if (window.Telegram && window.Telegram.WebApp) {
-      window.Telegram.WebApp.ready();
-      window.Telegram.WebApp.expand();
-      
-      // Устанавливаем цвета темы
-      const colorScheme = window.Telegram.WebApp.colorScheme;
-      if (colorScheme === 'dark') {
-        document.body.style.backgroundColor = '#000000';
-      } else {
-        document.body.style.backgroundColor = '#FFFFFF';
-      }
-    }
-  </script>
+        
+        // Функции для взаимодействия
+        function openCategory(categoryName) {
+            if (tg && tg.showAlert) {
+                tg.showAlert(`Открыта категория: ${categoryName}`);
+            } else {
+                alert(`Открыта категория: ${categoryName}`);
+            }
+        }
+        
+        function openCart() {
+            if (tg && tg.showAlert) {
+                tg.showAlert('Открыта корзина');
+            } else {
+                alert('Открыта корзина');
+            }
+        }
+        
+        function addProduct() {
+            if (tg && tg.showAlert) {
+                tg.showAlert('Функция добавления товара');
+            } else {
+                alert('Функция добавления товара');
+            }
+        }
+        
+        // Запуск проверки при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            checkTelegramWebApp();
+            
+            // Дополнительная проверка через небольшую задержку
+            setTimeout(checkTelegramWebApp, 1000);
+        });
+        
+        // Обработка изменений в Telegram WebApp
+        if (tg) {
+            tg.onEvent('themeChanged', function() {
+                checkTelegramWebApp();
+            });
+        }
+    </script>
 </body>
 </html>
